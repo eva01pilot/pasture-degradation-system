@@ -17,7 +17,7 @@
 ├── node-api/ # Fastify + TypeScript
 └── python-api/ # FastAPI
 
---
+---
 
 ## 🚀 Как запустить проект
 
