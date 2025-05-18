@@ -1,0 +1,47 @@
+---
+version: "3.9"
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules  # Avoid overwriting node_modules
+    command: npm run dev
+    networks:
+      - app
+
+  node-api:
+    build: ./node-api
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./node-api:/app
+      - /app/node_modules
+    command: npm run dev
+    networks:
+      - app
+
+  python-api:
+    build: ./python-api
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./python-api:/app
+    command: uvicorn main:app --reload --host 0.0.0.0 --port 3001
+    networks:
+      - app
+
+  caddy:
+    image: caddy:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+    networks:
+      - app
+
+networks:
+  app:
+    driver: bridge

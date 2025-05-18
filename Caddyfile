@@ -1,0 +1,5 @@
+:80
+
+reverse_proxy /api/* node-api:3000
+reverse_proxy /pyapi/* python-api:3001
+reverse_proxy / frontend:5173
