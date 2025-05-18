@@ -31,7 +31,7 @@ cd pasture-degradation-system
 ```
 2. Запустите все сервисы
 ```bash
-docker-compose up --build
+docker compose up --build
 ```
 3. После запуска сервисы будут работать по адресам
 
