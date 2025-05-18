@@ -1,5 +1,14 @@
 :80
 
-reverse_proxy /api/* node-api:3000
-reverse_proxy /pyapi/* python-api:3001
-reverse_proxy / frontend:5173
+handle_path /api/* {
+    reverse_proxy node-api:3000
+}
+
+handle_path /pyapi/* {
+    reverse_proxy python-api:3001
+}
+
+# Все остальные запросы — на фронтенд
+handle {
+    reverse_proxy frontend:5173
+}
