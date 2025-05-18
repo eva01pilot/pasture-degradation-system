@@ -10,6 +10,7 @@
 ---
 
 ## 📦 Структура проекта
+.
 ├── docker-compose.yml
 ├── Caddyfile
 ├── frontend/ # Vue + Vite
@@ -33,8 +34,9 @@ cd pasture-degradation-system
 docker-compose up --build
 ```
 3. После запуска сервисы будут работать по адресам
-| Компонент  | URL                                              |
-| ---------- | ------------------------------------------------ |
-| Фронтенд   | [http://localhost](http://localhost)             |
-| Node API   | [http://localhost/api](http://localhost/api)     |
-| Python API | [http://localhost/pyapi](http://localhost/pyapi) |
+
+| Компонент   | URL                        |
+|-------------|----------------------------|
+| Фронтенд    | [http://localhost](http://localhost)         |
+| Node API    | [http://localhost/api](http://localhost/api) |
+| Python API  | [http://localhost/pyapi](http://localhost/pyapi) |
