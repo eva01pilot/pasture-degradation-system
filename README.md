@@ -10,13 +10,13 @@
 ---
 
 ## 📦 Структура проекта
-.
+```.
 ├── docker-compose.yml
 ├── Caddyfile
 ├── frontend/ # Vue + Vite
 ├── node-api/ # Fastify + TypeScript
 └── python-api/ # FastAPI
-
+```
 ---
 
 ## 🚀 Как запустить проект
