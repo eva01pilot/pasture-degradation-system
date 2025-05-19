@@ -1,0 +1,23 @@
+---
+version: '3.8'
+
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:24.0.3
+    container_name: keycloak
+    command: start-dev --import-realm
+    env_file:
+      - .env
+    environment:
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      KC_DB: dev-file
+      KC_PROXY: edge
+      KC_HOSTNAME_URL: ${KEYCLOAK_BASE_URL}
+      KC_HOSTNAME_ADMIN_URL: ${KEYCLOAK_BASE_URL}
+    ports:
+      - "${KEYCLOAK_PORT:-8080}:8080"
+    volumes:
+      - ./realm-import:/opt/keycloak/data/import
+    networks:
+      - app

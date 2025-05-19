@@ -7,6 +7,9 @@ handle_path /api/* {
 handle_path /pyapi/* {
     reverse_proxy python-api:3001
 }
+handle_path /auth/* {
+    reverse_proxy keycloak:8080
+}
 
 # Все остальные запросы — на фронтенд
 handle {

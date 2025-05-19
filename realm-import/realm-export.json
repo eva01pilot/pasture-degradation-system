@@ -1,0 +1,39 @@
+{
+  "realm": "myrealm",
+  "enabled": true,
+  "users": [
+    {
+      "username": "realm-admin",
+      "enabled": true,
+      "emailVerified": true,
+      "email": "realm-admin@example.com",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "realmadmin",
+          "temporary": false
+        }
+      ]
+    }
+  ],
+  "clients": [
+    {
+      "clientId": "dev-client",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": true,
+      "redirectUris": [
+        "http://localhost:3000/*"
+      ]
+    },
+    {
+      "clientId": "prod-client",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": true,
+      "redirectUris": [
+        "https://myapp.example.com/*"
+      ]
+    }
+  ]
+}
