@@ -2,11 +2,14 @@ FROM node:20
 
 WORKDIR /app
 
-# Copy only package files first (for caching)
+# Copy only package files and install dependencies first
 COPY package*.json tsconfig.json ./
 RUN npm install
 
-# Copy the source code
+# Copy source and config
 COPY ./src ./src
+COPY drizzle.config.ts ./
+COPY ./drizzle ./drizzle
 
-CMD ["npm", "run", "dev"]
+# Run migrations and start app
+CMD npm run db:push && npm run db:seed && npm run dev

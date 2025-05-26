@@ -1,10 +1,13 @@
 import Fastify from "fastify";
+import { db } from "./db";
+import { users } from "./db/schema";
 
 const app = Fastify();
 const PORT = 3000;
 
 app.get("/api/hello", async () => {
-  return { message: "Hello from Node API with TSX + Fastify!" };
+  const allUsers = await db.select().from(users);
+  return { allUsers };
 });
 
 app.listen({ port: PORT, host: "0.0.0.0" }, (err) => {
