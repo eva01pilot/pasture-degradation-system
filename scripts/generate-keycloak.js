@@ -4,6 +4,10 @@ require("dotenv").config();
 const realm = {
   realm: process.env.REALM_NAME,
   enabled: true,
+  registrationAllowed: true,
+  loginWithEmailAllowed: true,
+  editUsernameAllowed: true,
+  resetPasswordAllowed: true,
   users: [
     {
       username: process.env.REALM_USER,
@@ -17,6 +21,7 @@ const realm = {
           temporary: false,
         },
       ],
+      realmRoles: ["admin"],
     },
   ],
   clients: [
@@ -26,6 +31,7 @@ const realm = {
       protocol: "openid-connect",
       publicClient: true,
       redirectUris: [process.env.DEV_CLIENT_REDIRECT],
+      webOrigins: [process.env.DEV_CLIENT_REDIRECT.replace("/*", "")],
     },
     {
       clientId: process.env.PROD_CLIENT_ID,
@@ -33,8 +39,17 @@ const realm = {
       protocol: "openid-connect",
       publicClient: true,
       redirectUris: [process.env.PROD_CLIENT_REDIRECT],
+      webOrigins: [process.env.PROD_CLIENT_REDIRECT.replace("/*", "")],
     },
   ],
+  roles: {
+    realm: [
+      { name: "admin" },
+      { name: "enterprise-manager" },
+      { name: "field-operator" },
+      { name: "viewer" },
+    ],
+  },
 };
 
 fs.mkdirSync("./realm-import", { recursive: true });

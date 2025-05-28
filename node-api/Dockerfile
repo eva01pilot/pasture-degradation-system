@@ -12,4 +12,4 @@ COPY drizzle.config.ts ./
 COPY ./drizzle ./drizzle
 
 # Run migrations and start app
-CMD npm run db:push && npm run db:seed && npm run dev
+CMD npm run db:push && npm run dev

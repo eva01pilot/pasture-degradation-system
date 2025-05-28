@@ -2,6 +2,21 @@
 version: '3.8'
 
 services:
+  keycloak-init:
+    image: node:20
+    container_name: keycloak-init
+    working_dir: /app
+    volumes:
+      - ./realm-import:/app/realm-import
+      - ./scripts:/app/scripts
+    env_file:
+      - .env
+    entrypoint: >
+      /bin/sh -c "npm install dotenv && node scripts/generate-keycloak.js"
+    networks:
+      - app
+    restart: "no"
+
   keycloak:
     image: quay.io/keycloak/keycloak:24.0.3
     container_name: keycloak
@@ -13,11 +28,16 @@ services:
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
       KC_DB: dev-file
       KC_PROXY: edge
-      KC_HOSTNAME_URL: ${KEYCLOAK_BASE_URL}
-      KC_HOSTNAME_ADMIN_URL: ${KEYCLOAK_BASE_URL}
+      KC_HOSTNAME_URL: ${KEYCLOAK_ADMIN_URL}
+      KC_HOSTNAME_ADMIN_URL: ${KEYCLOAK_ADMIN_URL}
+    depends_on:
+      - keycloak-init
     ports:
       - "${KEYCLOAK_PORT:-8080}:8080"
     volumes:
       - ./realm-import:/opt/keycloak/data/import
     networks:
       - app
+
+networks:
+  app:

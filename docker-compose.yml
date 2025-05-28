@@ -7,8 +7,10 @@ services:
       - "5173:5173"
     volumes:
       - ./frontend:/app
-      - /app/node_modules  # Avoid overwriting node_modules
+      - ./frontend/node_modules:/app/node_modules
     command: npm run dev
+    env_file:
+      - .env
     networks:
       - app
 
@@ -17,9 +19,16 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./node-api:/app
-      - /app/node_modules
-    command: npm run dev
+      - ./node-api/src:/app/src
+      - ./node-api/drizzle:/app/drizzle
+      - ./node-api/drizzle.config.ts:/app/drizzle.config.ts
+      - ./node-api/tsconfig.json:/app/tsconfig.json
+
+    depends_on:
+      - postgres
+      - keycloak
+    env_file:
+      - .env
     networks:
       - app
 

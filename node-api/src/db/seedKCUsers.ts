@@ -8,13 +8,13 @@ import { fileURLToPath } from "url";
 // Required if using ES Modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const kcAdminClient = new KcAdminClient({ baseUrl: "http://localhost/auth" });
 
 dotenv.config({ path: path.resolve(__dirname, "../../../.env") });
-// Authorize with username / password
+const kcAdminClient = new KcAdminClient({
+  baseUrl: process.env.KEYCLOAK_BASE_URL,
+});
 
 const main = async () => {
-  console.log(path.resolve(__dirname, "../../../.env"));
   await kcAdminClient.auth({
     username: process.env.KEYCLOAK_ADMIN,
     password: process.env.KEYCLOAK_ADMIN_PASSWORD,
@@ -22,7 +22,6 @@ const main = async () => {
     clientId: "admin-cli",
   });
   const usersAll = await kcAdminClient.users.find();
-  console.log(usersAll);
   usersAll.forEach(async (user) => {
     await db
       .insert(users)

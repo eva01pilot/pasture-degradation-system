@@ -13,7 +13,7 @@ import {
 export const users = pgTable("users", {
   id: uuid("id").primaryKey().defaultRandom(),
   keycloakId: varchar("keycloak_id", { length: 255 }).notNull().unique(),
-  email: varchar("email", { length: 255 }),
+  username: varchar("email", { length: 255 }),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
@@ -21,6 +21,7 @@ export const polygons = pgTable("polygons", {
   id: uuid("id").primaryKey().defaultRandom(),
   name: varchar("name", { length: 255 }),
   coordinates: jsonb("coordinates").notNull(), // [[lng, lat], ...]
+  featureId: varchar("featureId", { length: 255 }).unique(),
   createdBy: uuid("created_by").references(() => users.id),
   createdAt: timestamp("created_at").defaultNow(),
 });

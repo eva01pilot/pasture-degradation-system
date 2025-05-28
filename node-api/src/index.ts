@@ -5,7 +5,7 @@ import { users } from "./db/schema";
 const app = Fastify();
 const PORT = 3000;
 
-app.get("/api/hello", async () => {
+app.get("/hello", async () => {
   const allUsers = await db.select().from(users);
   return { allUsers };
 });
