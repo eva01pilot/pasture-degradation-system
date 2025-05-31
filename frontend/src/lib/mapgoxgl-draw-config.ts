@@ -27,6 +27,16 @@ SingleSelectMode.onClick = function (state: any, evt: MapMouseEvent) {
   MapboxDraw.modes.simple_select.onClick?.call(this, state, evt);
 };
 
+export const NewSimpleSelect = Object.assign(
+  {},
+  MapboxDraw.modes.simple_select,
+  {
+    dragMove() {
+      // no-op to disable drag
+    },
+  },
+);
+
 export const MAPBOXGL_DRAW_STYLES = [
   {
     id: "gl-draw-polygon-fill",

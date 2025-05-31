@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import DefaultLayout from "./components/layout/DefaultLayout.vue";
 import LeafletMap from "./components/LeafletMap.vue";
+import PolygonList from "./components/polygon/PolygonList.vue";
 </script>
 
 <template>
   <DefaultLayout>
     <template #drawer-title>Полигоны</template>
-    <template #drawer-default> </template>
+    <template #drawer-default>
+      <PolygonList />
+    </template>
     <template #default>
       <LeafletMap class="h-full w-full" />
     </template>

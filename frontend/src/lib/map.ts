@@ -1,23 +1,14 @@
 import mgl, { type Feature, type IControl } from "maplibre-gl";
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
-import { MAPBOXGL_DRAW_STYLES, SingleSelectMode } from "./mapgoxgl-draw-config";
+import {
+  MAPBOXGL_DRAW_STYLES,
+  NewSimpleSelect,
+  SingleSelectMode,
+} from "./mapgoxgl-draw-config";
 
 export class MGLMap {
   map: mgl.Map;
   drawCtrl: MapboxDraw | null = null;
-  private onFeatureCreateCB: ((opts: { features: Array<Feature> }) => any)[] =
-    [];
-  private onFeatureDeleteCB: ((opts: { features: Array<Feature> }) => any)[] =
-    [];
-  private onFeatureUpdateCB: ((opts: {
-    features: Array<Feature>;
-    action: "move" | "change_coordinates";
-  }) => any)[] = [];
-  private onSelectionChangeCB: ((opts: { features: Array<Feature> }) => any)[] =
-    [];
-  private onModeChangeCB: ((opts: {
-    mode: "single_select_mode" | "direct_select" | "draw_polygon";
-  }) => any)[] = [];
   constructor(container: HTMLElement) {
     this.map = new mgl.Map({
       container,
@@ -48,8 +39,6 @@ export class MGLMap {
     this.setupMapboxDraw();
   }
 
-  addOnFeatureUpdate() {}
-
   private setupMapboxDraw() {
     //@ts-expect-error of open-source
     MapboxDraw.constants.classes.CANVAS = "maplibregl-canvas" as any;
@@ -64,15 +53,18 @@ export class MGLMap {
     this.drawCtrl = new MapboxDraw({
       displayControlsDefault: false,
       controls: {
-        polygon: true,
-        trash: true,
+        polygon: false,
+        trash: false,
       },
       modes: {
         ...MapboxDraw.modes,
         single_select_mode: SingleSelectMode,
+        simple_select: NewSimpleSelect,
       },
       styles: MAPBOXGL_DRAW_STYLES,
     });
+
+    this.map.addControl(this.drawCtrl as unknown as IControl);
   }
 
   setupControls() {
