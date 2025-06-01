@@ -1,15 +1,7 @@
 import KcAdminClient from "@keycloak/keycloak-admin-client";
-import dotenv from "dotenv";
-import path from "path";
 import { db } from "../db/index";
 import { users } from "../db/schema";
-import { fileURLToPath } from "url";
 
-// Required if using ES Modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-dotenv.config({ path: path.resolve(__dirname, "../../../.env") });
 const kcAdminClient = new KcAdminClient({
   baseUrl: process.env.KEYCLOAK_BASE_URL,
 });

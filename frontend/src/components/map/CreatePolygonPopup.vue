@@ -86,10 +86,13 @@ onMounted(() => {
 
   draw.value?.changeMode("draw_polygon");
 
-  map.value?.on("draw.create", ({ features }: { features: Feature[] }) => {
-    emit("created", features[0]);
-    //map.value?.remove();
-  });
+  map.value?.on(
+    "draw.create",
+    ({ features }: { features: GeoJSON.Feature<GeoJSON.Polygon>[] }) => {
+      emit("created", features[0]);
+      //map.value?.remove();
+    },
+  );
 });
 </script>
 

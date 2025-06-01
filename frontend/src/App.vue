@@ -1,7 +1,13 @@
 <script setup lang="ts">
+import { onMounted } from "vue";
 import DefaultLayout from "./components/layout/DefaultLayout.vue";
 import LeafletMap from "./components/LeafletMap.vue";
 import PolygonList from "./components/polygon/PolygonList.vue";
+import { api } from "./main";
+
+onMounted(async () => {
+  await api.instance.post("/user/signup");
+});
 </script>
 
 <template>

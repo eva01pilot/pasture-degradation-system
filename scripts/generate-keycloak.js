@@ -1,5 +1,5 @@
 const fs = require("fs");
-require("dotenv").config();
+const path = require("path");
 
 const realm = {
   realm: process.env.REALM_NAME,
@@ -8,6 +8,7 @@ const realm = {
   loginWithEmailAllowed: true,
   editUsernameAllowed: true,
   resetPasswordAllowed: true,
+
   users: [
     {
       username: process.env.REALM_USER,
@@ -24,24 +25,29 @@ const realm = {
       realmRoles: ["admin"],
     },
   ],
+
   clients: [
+    // Frontend Client
     {
-      clientId: process.env.DEV_CLIENT_ID,
+      clientId: process.env.FRONTEND_CLIENT_ID,
       enabled: true,
       protocol: "openid-connect",
       publicClient: true,
-      redirectUris: [process.env.DEV_CLIENT_REDIRECT],
-      webOrigins: [process.env.DEV_CLIENT_REDIRECT.replace("/*", "")],
+      redirectUris: [process.env.FRONTEND_CLIENT_REDIRECT],
+      webOrigins: [process.env.FRONTEND_CLIENT_REDIRECT.replace("/*", "")],
+      defaultClientScopes: ["web-origins", "profile", "email", "aud-scope"],
     },
+
+    // Backend API Client
     {
-      clientId: process.env.PROD_CLIENT_ID,
+      clientId: process.env.BACKEND_CLIENT_ID,
       enabled: true,
       protocol: "openid-connect",
-      publicClient: true,
-      redirectUris: [process.env.PROD_CLIENT_REDIRECT],
-      webOrigins: [process.env.PROD_CLIENT_REDIRECT.replace("/*", "")],
+      publicClient: false,
+      bearerOnly: true, // Used for resource protection only
     },
   ],
+
   roles: {
     realm: [
       { name: "admin" },
@@ -50,11 +56,35 @@ const realm = {
       { name: "viewer" },
     ],
   },
+
+  clientScopes: [
+    {
+      name: "aud-scope",
+      protocol: "openid-connect",
+      protocolMappers: [
+        {
+          name: "aud",
+          protocol: "openid-connect",
+          protocolMapper: "oidc-hardcoded-claim-mapper",
+          consentRequired: false,
+          config: {
+            "claim.name": "aud",
+            "claim.value": process.env.BACKEND_CLIENT_ID,
+            "jsonType.label": "String",
+            "access.token.claim": "true",
+            "id.token.claim": "true",
+          },
+        },
+      ],
+    },
+  ],
 };
 
 fs.mkdirSync("./realm-import", { recursive: true });
+
 fs.writeFileSync(
   "./realm-import/realm-export.json",
   JSON.stringify(realm, null, 2),
 );
+
 console.log("✅ Realm config generated from .env");

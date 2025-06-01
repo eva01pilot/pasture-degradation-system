@@ -3,16 +3,19 @@ import type MapboxDraw from "@mapbox/mapbox-gl-draw";
 import type { Feature, Polygon as GeoPolygon, Position } from "geojson";
 
 export interface AppPolygon {
-  id: string;
   name: string;
   coordinates: Position[][];
-  createdAt?: number;
+  createdAt?: string;
   featureId: string;
+  createdBy?: string;
 }
 
-export const appPolygonToFeature = (poly: AppPolygon): GeoJSON.Feature => {
+export const appPolygonToFeature = (
+  poly: AppPolygon,
+): GeoJSON.Feature<GeoJSON.Polygon> => {
   return {
     type: "Feature",
+    id: poly.featureId,
     geometry: {
       coordinates: poly.coordinates,
       type: "Polygon",

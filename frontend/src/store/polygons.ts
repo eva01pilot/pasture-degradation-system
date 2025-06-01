@@ -1,11 +1,7 @@
 import { defineStore } from "pinia";
-import { reactive, watch } from "vue";
-import { computed } from "vue";
 import { ref } from "vue";
-import { useMachine } from "@xstate/vue";
 import { type AppPolygon } from "../lib/polygonMachine";
-import { watchEffect } from "vue";
-import type { Feature } from "maplibre-gl";
+import { api } from "../main";
 export const usePolygonsStore = defineStore("polygons", () => {
   const polygons = ref<AppPolygon[]>([]);
 
@@ -14,13 +10,40 @@ export const usePolygonsStore = defineStore("polygons", () => {
   };
 
   const addPolygonFromFeature = (feature: GeoJSON.Feature<GeoJSON.Polygon>) => {
-    polygons.value.push({
+    const polygon = {
       id: String(feature.id),
-      name: "",
+      name: `Полигон ${feature.id}`,
       coordinates: feature.geometry.coordinates,
       featureId: String(feature.id),
-    });
+    };
+    polygons.value.push(polygon);
+    api.instance.post("/polygons", polygon);
   };
 
-  return { polygons, addPolygon, addPolygonFromFeature };
+  const editPolygonFromFeature = async (
+    feature: GeoJSON.Feature<GeoJSON.Polygon>,
+  ) => {
+    const polygon = polygons.value.find((p) => p.featureId === feature.id);
+    if (!polygon) return;
+    polygon.name = `Полигон ${feature.id}`;
+    polygon.coordinates = feature.geometry.coordinates;
+    polygon.featureId = String(feature.id);
+
+    await api.instance.put(`/polygons/${feature.id}`, polygon);
+  };
+
+  const fetchPolygonData = async () => {
+    const res = await api.instance.get<{ allPolygons: AppPolygon[] }>(
+      "polygons",
+    );
+    polygons.value = res.data.allPolygons;
+  };
+
+  return {
+    polygons,
+    addPolygon,
+    addPolygonFromFeature,
+    editPolygonFromFeature,
+    fetchPolygonData,
+  };
 });

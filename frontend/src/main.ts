@@ -12,14 +12,16 @@ import { createRouter, createWebHistory } from "vue-router";
 import { createPinia } from "pinia";
 import { Api } from "./services/api";
 
+console.log(import.meta.env);
+
 const keycloak = new Keycloak({
   url: import.meta.env.VITE_KEYCLOAK_BASE_URL,
   realm: import.meta.env.VITE_REALM_NAME,
-  clientId: import.meta.env.VITE_DEV_CLIENT_ID,
+  clientId: import.meta.env.VITE_FRONTEND_CLIENT_ID,
 });
 
 const pinia = createPinia();
-const api = new Api();
+export const api = new Api();
 
 export const logout = () => {
   localStorage.removeItem("keycloakToken");

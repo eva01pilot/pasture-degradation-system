@@ -18,10 +18,9 @@ export const users = pgTable("users", {
 });
 
 export const polygons = pgTable("polygons", {
-  id: uuid("id").primaryKey().defaultRandom(),
+  featureId: varchar("featureId", { length: 255 }).primaryKey().unique(),
   name: varchar("name", { length: 255 }),
   coordinates: jsonb("coordinates").notNull(), // [[lng, lat], ...]
-  featureId: varchar("featureId", { length: 255 }).unique(),
   createdBy: uuid("created_by").references(() => users.id),
   createdAt: timestamp("created_at").defaultNow(),
 });

@@ -9,8 +9,13 @@ services:
       - ./frontend:/app
       - ./frontend/node_modules:/app/node_modules
     command: npm run dev
-    env_file:
-      - .env
+    environment:
+      - VITE_API_BASE_URL
+      - VITE_KEYCLOAK_BASE_URL
+      - VITE_REALM_NAME
+      - VITE_FRONTEND_CLIENT_ID
+      - VITE_FRONTEND_CLIENT_REDIRECT
+      - VITE_API_BASE_URL
     networks:
       - app
 
@@ -27,8 +32,13 @@ services:
     depends_on:
       - postgres
       - keycloak
-    env_file:
-      - .env
+    environment:
+      - DATABASE_URL
+      - DOMAIN
+      - REALM_NAME
+      - KEYCLOAK_BASE_URL
+      - KEYCLOAK_BASE_URL
+      - BACKEND_CLIENT_ID
     networks:
       - app
 

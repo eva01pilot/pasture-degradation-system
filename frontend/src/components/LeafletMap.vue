@@ -7,6 +7,7 @@ import { storeToRefs } from "pinia";
 import { watch } from "vue";
 import { shallowRef } from "vue";
 import { appPolygonToFeature } from "../lib/polygonMachine";
+import { getRandomVibrantColor } from "../lib/utils";
 
 const mapRef = useTemplateRef("mapRef");
 
@@ -44,8 +45,8 @@ watch(
         type: "fill",
         source: poly.featureId,
         paint: {
-          "fill-color": "#0080ff",
-          "fill-opacity": 0.5,
+          "fill-color": getRandomVibrantColor(),
+          "fill-opacity": 0.9,
         },
       });
     });

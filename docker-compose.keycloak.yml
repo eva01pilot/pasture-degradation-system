@@ -9,20 +9,24 @@ services:
     volumes:
       - ./realm-import:/app/realm-import
       - ./scripts:/app/scripts
-    env_file:
-      - .env
     entrypoint: >
       /bin/sh -c "npm install dotenv && node scripts/generate-keycloak.js"
     networks:
       - app
+    environment:
+      - REALM_NAME
+      - REALM_USER
+      - REALM_USER_EMAIL
+      - REALM_USER_PASSWORD
+      - FRONTEND_CLIENT_ID
+      - FRONTEND_CLIENT_REDIRECT
+      - BACKEND_CLIENT_ID
     restart: "no"
 
   keycloak:
     image: quay.io/keycloak/keycloak:24.0.3
     container_name: keycloak
     command: start-dev --import-realm
-    env_file:
-      - .env
     environment:
       KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}

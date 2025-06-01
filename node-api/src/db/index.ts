@@ -7,5 +7,4 @@ import dotenv from "dotenv";
 // Required if using ES Modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-dotenv.config({ path: path.resolve(__dirname, "../../../.env") });
 export const db = drizzle(process.env.DATABASE_URL!);

@@ -1,47 +1,27 @@
 <template>
   <Card class="">
     <template #title>
-      <Input :readonly="mode === 'readonly'" v-model="model.name" />
+      <TypographyTitle :level="5">{{ model.name }}</TypographyTitle>
     </template>
     <template #default>
-      <div v-for="ring in model.coordinates">
-        <div class="grid grid-cols-3" v-for="(coord, id) in ring">
-          <InputNumber
-            :readonly="mode === 'readonly'"
-            v-model:value="coord[0]"
-            placeholder="Широта"
-            string-mode
-          />
-          <InputNumber
-            :readonly="mode === 'readonly'"
-            v-model:value="coord[1]"
-            placeholder="Долгота"
-            string-mode
-          />
-          <Button @click="ring.splice(id)"> Delete </Button>
-        </div>
-      </div>
+      <Table
+        v-for="datasource in datasources"
+        size="small"
+        :data-source="datasource"
+        :pagination="{ pageSize: 5 }"
+        :columns
+      />
     </template>
     <template #actions>
-      <Button v-if="mode === 'readonly'" @click="emit('changeToEdit', model)">
-        Edit
-      </Button>
-      <Button v-else @click="emit('changeToReadonly', model)">
-        Complete
-      </Button>
+      <Button @click="emit('editClicked', model)">Редактировать</Button>
     </template>
   </Card>
 </template>
 
 <script setup lang="ts">
-import {
-  Button,
-  Card,
-  Input,
-  InputNumber,
-  TypographyTitle,
-} from "ant-design-vue";
+import { Button, Card, Table, TypographyTitle } from "ant-design-vue";
 import type { AppPolygon } from "../../../lib/polygonMachine";
+import { computed } from "vue";
 
 const model = defineModel<AppPolygon>({ required: true });
 
@@ -50,8 +30,29 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  changeToEdit: [AppPolygon];
-  changeToReadonly: [AppPolygon];
-  changeToCreate: [];
+  editClicked: [AppPolygon];
 }>();
+
+const datasources = computed(() => {
+  return model.value.coordinates.map((ring, ringIdx) =>
+    ring.map((coord, coordIdx) => ({
+      key: `${ringIdx}-${coordIdx}`,
+      lat: coord[0],
+      lon: coord[1],
+    })),
+  );
+});
+
+const columns = [
+  {
+    title: "Широта",
+    dataIndex: "lat",
+    key: "lat",
+  },
+  {
+    title: "Долгота",
+    dataIndex: "lon",
+    key: "lon",
+  },
+];
 </script>

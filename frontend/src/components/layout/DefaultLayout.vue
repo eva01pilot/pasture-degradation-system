@@ -1,6 +1,6 @@
 <template>
   <div class="grid grid-cols-[1fr_4fr]">
-    <aside class="h-screen bg-white p-4">
+    <aside class="h-screen bg-white p-4 overflow-auto">
       <TypographyTitle class="" :level="2">
         <slot name="drawer-title" />
       </TypographyTitle>
