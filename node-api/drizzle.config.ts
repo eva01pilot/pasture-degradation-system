@@ -3,6 +3,8 @@ import path from "path";
 import { defineConfig } from "drizzle-kit";
 
 // Ensure the root .env is loaded even from subdir
+//
+dotenv.config({ path: "../.env" });
 
 export default defineConfig({
   out: "./drizzle",

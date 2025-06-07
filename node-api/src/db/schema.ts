@@ -23,13 +23,14 @@ export const polygons = pgTable("polygons", {
   coordinates: jsonb("coordinates").notNull(), // [[lng, lat], ...]
   createdBy: uuid("created_by").references(() => users.id),
   createdAt: timestamp("created_at").defaultNow(),
+  color: varchar("color", { length: 255 }),
 });
 
 export const analyses = pgTable("analyses", {
   id: uuid("id").primaryKey().defaultRandom(),
-  polygonId: uuid("polygon_id")
+  polygonId: varchar("polygon_id")
     .notNull()
-    .references(() => polygons.id),
+    .references(() => polygons.featureId),
   date: timestamp("date").notNull(),
   degradationLevel: varchar("degradation_level", { length: 64 }),
   areaAffected: integer("area_affected"), // in hectares maybe

@@ -14,7 +14,7 @@ onMounted(async () => {
   <DefaultLayout>
     <template #drawer-title>Полигоны</template>
     <template #drawer-default>
-      <PolygonList />
+      <PolygonList class="min-w-64" />
     </template>
     <template #default>
       <LeafletMap class="h-full w-full" />

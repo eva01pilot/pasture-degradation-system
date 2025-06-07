@@ -9,12 +9,16 @@ export const usePolygonsStore = defineStore("polygons", () => {
     polygons.value.push(polygon);
   };
 
-  const addPolygonFromFeature = (feature: GeoJSON.Feature<GeoJSON.Polygon>) => {
+  const addPolygonFromFeature = (
+    feature: GeoJSON.Feature<GeoJSON.Polygon>,
+    color: string,
+  ) => {
     const polygon = {
       id: String(feature.id),
       name: `Полигон ${feature.id}`,
       coordinates: feature.geometry.coordinates,
       featureId: String(feature.id),
+      color,
     };
     polygons.value.push(polygon);
     api.instance.post("/polygons", polygon);

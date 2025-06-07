@@ -26,6 +26,9 @@ importers:
       '@types/mapbox__mapbox-gl-draw':
         specifier: ^1.4.8
         version: 1.4.8
+      '@vueuse/core':
+        specifier: ^13.3.0
+        version: 13.3.0(vue@3.5.15(typescript@5.8.3))
       '@watergis/maplibre-gl-terradraw':
         specifier: ^1.3.14
         version: 1.3.14(maplibre-gl@5.5.0)(terra-draw@1.6.2)
@@ -924,6 +927,9 @@ packages:
   '@types/supercluster@7.1.3':
     resolution: {integrity: sha512-Z0pOY34GDFl3Q6hUFYf3HkTwKEE02e7QgtJppBt+beEAxnyOpJua+voGFvxINBHa06GwLFFym7gRPY2SiKIfIA==}
 
+  '@types/web-bluetooth@0.0.21':
+    resolution: {integrity: sha512-oIQLCGWtcFZy2JW77j9k8nHzAOpqMHLQejDA48XXMWH6tjCQHz5RCFz1bzsmROyL6PUm+LLnUiI4BCn221inxA==}
+
   '@vitejs/plugin-vue@5.2.4':
     resolution: {integrity: sha512-7Yx/SXSOcQq5HiiV3orevHUFn+pmMB4cgbEkDYgnkUWb0WfeQ/wa2yFv6D5ICiCQOVpjA7vYDXrC7AGO8yjDHA==}
     engines: {node: ^18.0.0 || >=20.0.0}
@@ -1011,6 +1017,19 @@ packages:
         optional: true
       vue:
         optional: true
+
+  '@vueuse/core@13.3.0':
+    resolution: {integrity: sha512-uYRz5oEfebHCoRhK4moXFM3NSCd5vu2XMLOq/Riz5FdqZMy2RvBtazdtL3gEcmDyqkztDe9ZP/zymObMIbiYSg==}
+    peerDependencies:
+      vue: ^3.5.0
+
+  '@vueuse/metadata@13.3.0':
+    resolution: {integrity: sha512-42IzJIOYCKIb0Yjv1JfaKpx8JlCiTmtCWrPxt7Ja6Wzoq0h79+YVXmBV03N966KEmDEESTbp5R/qO3AB5BDnGw==}
+
+  '@vueuse/shared@13.3.0':
+    resolution: {integrity: sha512-L1QKsF0Eg9tiZSFXTgodYnu0Rsa2P0En2LuLrIs/jgrkyiDuJSsPZK+tx+wU0mMsYHUYEjNsuE41uqqkuR8VhA==}
+    peerDependencies:
+      vue: ^3.5.0
 
   '@watergis/maplibre-gl-terradraw@1.3.14':
     resolution: {integrity: sha512-qjog95cqFu8xZQNhSv2JgFTzu5aAPRQkk9Uq2J5kUT+MfhJS1S2JMwKfNICNDrJrJISDD10cjf6XicoCyjzsSw==}
@@ -3333,6 +3352,8 @@ snapshots:
     dependencies:
       '@types/geojson': 7946.0.16
 
+  '@types/web-bluetooth@0.0.21': {}
+
   '@vitejs/plugin-vue@5.2.4(vite@6.3.5(jiti@2.4.2)(lightningcss@1.30.1)(yaml@2.8.0))(vue@3.5.15(typescript@5.8.3))':
     dependencies:
       vite: 6.3.5(jiti@2.4.2)(lightningcss@1.30.1)(yaml@2.8.0)
@@ -3456,6 +3477,19 @@ snapshots:
   '@vue/tsconfig@0.7.0(typescript@5.8.3)(vue@3.5.15(typescript@5.8.3))':
     optionalDependencies:
       typescript: 5.8.3
+      vue: 3.5.15(typescript@5.8.3)
+
+  '@vueuse/core@13.3.0(vue@3.5.15(typescript@5.8.3))':
+    dependencies:
+      '@types/web-bluetooth': 0.0.21
+      '@vueuse/metadata': 13.3.0
+      '@vueuse/shared': 13.3.0(vue@3.5.15(typescript@5.8.3))
+      vue: 3.5.15(typescript@5.8.3)
+
+  '@vueuse/metadata@13.3.0': {}
+
+  '@vueuse/shared@13.3.0(vue@3.5.15(typescript@5.8.3))':
+    dependencies:
       vue: 3.5.15(typescript@5.8.3)
 
   '@watergis/maplibre-gl-terradraw@1.3.14(maplibre-gl@5.5.0)(terra-draw@1.6.2)':

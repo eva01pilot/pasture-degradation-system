@@ -1,5 +1,5 @@
 <template>
-  <div class="grid grid-cols-[1fr_4fr]">
+  <div class="grid grid-cols-[400px_4fr]">
     <aside class="h-screen bg-white p-4 overflow-auto">
       <TypographyTitle class="" :level="2">
         <slot name="drawer-title" />

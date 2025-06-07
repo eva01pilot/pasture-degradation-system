@@ -16,8 +16,8 @@
       v-if="createPopupOpen"
       :center="[10, 40]"
       @created="
-        (e) => {
-          polygonStore.addPolygonFromFeature(e);
+        (e, color) => {
+          polygonStore.addPolygonFromFeature(e, color);
           createPopupOpen = false;
         }
       "

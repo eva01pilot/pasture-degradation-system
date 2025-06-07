@@ -4,6 +4,7 @@ export const polygonCreateSchema = z.object({
   coordinates: z.array(z.array(z.array(z.number()))),
   featureId: z.string(),
   name: z.string(),
+  color: z.string(),
 });
 export const polygonUpdateSchema = z.object({
   coordinates: z.array(z.array(z.array(z.number()))),
@@ -11,6 +12,7 @@ export const polygonUpdateSchema = z.object({
   name: z.string(),
   createdBy: z.string(),
   createdAt: z.string(),
+  color: z.string(),
 });
 
 export const polygonUpdateParamsSchema = z.object({

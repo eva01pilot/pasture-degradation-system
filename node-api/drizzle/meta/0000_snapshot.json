@@ -1,5 +1,5 @@
 {
-  "id": "7c2f22d3-be3f-4c56-bf27-cc9015781807",
+  "id": "36974620-c46f-4e5a-9053-618b6d22e4fd",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -17,7 +17,7 @@
         },
         "polygon_id": {
           "name": "polygon_id",
-          "type": "uuid",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": true
         },
@@ -55,15 +55,15 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "analyses_polygon_id_polygons_id_fk": {
-          "name": "analyses_polygon_id_polygons_id_fk",
+        "analyses_polygon_id_polygons_featureId_fk": {
+          "name": "analyses_polygon_id_polygons_featureId_fk",
           "tableFrom": "analyses",
           "tableTo": "polygons",
           "columnsFrom": [
             "polygon_id"
           ],
           "columnsTo": [
-            "id"
+            "featureId"
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
@@ -144,12 +144,11 @@
       "name": "polygons",
       "schema": "",
       "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
+        "featureId": {
+          "name": "featureId",
+          "type": "varchar(255)",
           "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
+          "notNull": true
         },
         "name": {
           "name": "name",
@@ -175,6 +174,12 @@
           "primaryKey": false,
           "notNull": false,
           "default": "now()"
+        },
+        "color": {
+          "name": "color",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {},
@@ -194,7 +199,15 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "polygons_featureId_unique": {
+          "name": "polygons_featureId_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "featureId"
+          ]
+        }
+      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -220,7 +233,7 @@
           "name": "email",
           "type": "varchar(255)",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "created_at": {
           "name": "created_at",

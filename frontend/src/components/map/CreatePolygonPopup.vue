@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { onMounted } from "vue";
 import { useTemplateRef } from "vue";
-import { storeToRefs } from "pinia";
-import mgl, { Map, type Feature, type IControl } from "maplibre-gl";
+import mgl, { Map, type IControl } from "maplibre-gl";
 import { shallowRef } from "vue";
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import { MAPBOXGL_DRAW_STYLES } from "../../lib/mapgoxgl-draw-config";
 import { Input, Modal } from "ant-design-vue";
+import { getRandomVibrantColor } from "../../lib/utils";
 
 const props = defineProps<{
   center: [number, number];
@@ -14,7 +14,9 @@ const props = defineProps<{
 
 const mapRef = useTemplateRef("mapRef");
 
-const emit = defineEmits<{ created: [GeoJSON.Feature<GeoJSON.Polygon>] }>();
+const emit = defineEmits<{
+  created: [GeoJSON.Feature<GeoJSON.Polygon>, string];
+}>();
 
 const setupMap = () => {
   if (!mapRef.value) return;
@@ -89,7 +91,7 @@ onMounted(() => {
   map.value?.on(
     "draw.create",
     ({ features }: { features: GeoJSON.Feature<GeoJSON.Polygon>[] }) => {
-      emit("created", features[0]);
+      emit("created", features[0], getRandomVibrantColor());
       //map.value?.remove();
     },
   );

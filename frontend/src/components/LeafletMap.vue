@@ -45,7 +45,7 @@ watch(
         type: "fill",
         source: poly.featureId,
         paint: {
-          "fill-color": getRandomVibrantColor(),
+          "fill-color": poly.color,
           "fill-opacity": 0.9,
         },
       });

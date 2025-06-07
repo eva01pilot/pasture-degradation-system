@@ -8,6 +8,7 @@ import {
 } from "./validation/polygon";
 import { verifyKeycloakToken } from "./auth/keycloak";
 import { eq } from "drizzle-orm";
+import { clearDb } from "./db/deleteAllTables";
 
 const app = Fastify();
 const PORT = 3000;
@@ -15,6 +16,10 @@ const PORT = 3000;
 app.get("/polygons", async () => {
   const allPolygons = await db.select().from(polygons);
   return { allPolygons };
+});
+app.get("/clear", async () => {
+  clearDb();
+  return { true: true };
 });
 
 app.post("/user/signup", async (req, res) => {
@@ -82,6 +87,7 @@ app.post("/polygons", async (req, res) => {
     createdAt: new Date(),
     featureId: params.data.featureId,
     name: params.data.name,
+    color: params.data.color,
   });
 
   return res.send(dbRes);

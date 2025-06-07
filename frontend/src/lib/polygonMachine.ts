@@ -8,6 +8,7 @@ export interface AppPolygon {
   createdAt?: string;
   featureId: string;
   createdBy?: string;
+  color: string;
 }
 
 export const appPolygonToFeature = (

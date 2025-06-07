@@ -3,7 +3,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "db:push": "drizzle-kit push"
+    "db:push": "drizzle-kit migrate"
   },
   "dependencies": {
     "@keycloak/keycloak-admin-client": "^26.2.4",
