@@ -7,10 +7,19 @@
       v-for="(polygon, i) in polygons"
       mode="edit"
       v-model="polygons[i]"
-      @edit-clicked="
-        (e) => (editPopupOpen = { open: true, feature: appPolygonToFeature(e) })
-      "
     >
+      <template #actions>
+        <div class="flex">
+          <Button @click="openEditPopup(polygon)"> Редактировать </Button>
+          <Button
+            @click="
+              polygonStore.analyze(polygon.coordinates, polygon.featureId)
+            "
+          >
+            Проанализировать деградацию
+          </Button>
+        </div>
+      </template>
     </PolygonCard>
     <CreatePolygonPopup
       v-if="createPopupOpen"
@@ -48,13 +57,13 @@
 
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import { usePolygonsStore } from "../../store/polygons";
+import { usePolygonsStore, type AppPolygon } from "../../store/polygons";
 import PolygonCard from "./presentation/PolygonCard.vue";
 import { Button } from "ant-design-vue";
 import CreatePolygonPopup from "../map/CreatePolygonPopup.vue";
 import { ref } from "vue";
 import EditPolygonPopup from "../map/EditPolygonPopup.vue";
-import { appPolygonToFeature } from "../../lib/polygonMachine";
+import { appPolygonToFeature } from "../../store/polygons";
 import { onMounted } from "vue";
 import { centroid } from "@turf/turf";
 
@@ -70,7 +79,12 @@ const editPopupOpen = ref<{
   feature: null,
 });
 
-const onEditClicked = () => {};
+const openEditPopup = (poly: AppPolygon) => {
+  editPopupOpen.value = {
+    open: true,
+    feature: appPolygonToFeature(poly),
+  };
+};
 
 onMounted(() => {
   polygonStore.fetchPolygonData();

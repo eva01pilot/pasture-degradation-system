@@ -28,6 +28,7 @@ services:
       - ./node-api/drizzle:/app/drizzle
       - ./node-api/drizzle.config.ts:/app/drizzle.config.ts
       - ./node-api/tsconfig.json:/app/tsconfig.json
+      - ./node-api/node_modules/:/app/node_modules
 
     depends_on:
       - postgres
@@ -40,6 +41,12 @@ services:
       - KEYCLOAK_BASE_URL
       - KEYCLOAK_BASE_URL
       - BACKEND_CLIENT_ID
+      - MINIO_ROOT_USER
+      - MINIO_ROOT_PASSWORD
+      - MINIO_DATASET_BUCKET
+      - MINIO_RESULTS_BUCKET
+      - MINIO_HOST
+      - MINIO_PORT
     networks:
       - app
 

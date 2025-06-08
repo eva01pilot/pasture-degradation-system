@@ -8,6 +8,8 @@ import {
   jsonb,
   integer,
   primaryKey,
+  numeric,
+  pgEnum,
 } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
@@ -19,23 +21,33 @@ export const users = pgTable("users", {
 
 export const polygons = pgTable("polygons", {
   featureId: varchar("featureId", { length: 255 }).primaryKey().unique(),
-  name: varchar("name", { length: 255 }),
+  name: varchar("name", { length: 255 }).notNull(),
   coordinates: jsonb("coordinates").notNull(), // [[lng, lat], ...]
-  createdBy: uuid("created_by").references(() => users.id),
-  createdAt: timestamp("created_at").defaultNow(),
-  color: varchar("color", { length: 255 }),
+  createdBy: uuid("created_by")
+    .references(() => users.id)
+    .notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  color: varchar("color", { length: 255 }).notNull(),
 });
 
+export const degradationRiskEnum = pgEnum("degradation_risk", [
+  "Низкий",
+  "Средний",
+  "Высокий",
+]);
 export const analyses = pgTable("analyses", {
   id: uuid("id").primaryKey().defaultRandom(),
   polygonId: varchar("polygon_id")
     .notNull()
     .references(() => polygons.featureId),
-  date: timestamp("date").notNull(),
-  degradationLevel: varchar("degradation_level", { length: 64 }),
-  areaAffected: integer("area_affected"), // in hectares maybe
-  metadata: jsonb("metadata"), // Any additional NDVI stats, etc.
-  createdAt: timestamp("created_at").defaultNow(),
+  ndvi_std: numeric(),
+  ndvi_mean: numeric(),
+  degradation_risk: degradationRiskEnum(),
+  analysis_date: timestamp("analysis_date"),
+  vegetation_coverage: numeric(),
+  soil_moisture: numeric(),
+  area_hectares: numeric(),
+  coordinates_count: numeric(),
 });
 
 export const files = pgTable("files", {

@@ -10,9 +10,23 @@ import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
 import { routes } from "vue-router/auto-routes";
 import { createRouter, createWebHistory } from "vue-router";
 import { createPinia } from "pinia";
-import { Api } from "./services/api";
+import { createTRPCClient, httpBatchLink } from "@trpc/client";
+import type { AppRouter } from "../../node-api/src/trpc/router";
 
-console.log(import.meta.env);
+let token = "";
+
+export const trpc = createTRPCClient<AppRouter>({
+  links: [
+    httpBatchLink({
+      url: import.meta.env.VITE_API_BASE_URL,
+      headers: () => {
+        return {
+          Authorization: `Bearer ${token}`,
+        };
+      },
+    }),
+  ],
+});
 
 const keycloak = new Keycloak({
   url: import.meta.env.VITE_KEYCLOAK_BASE_URL,
@@ -21,7 +35,6 @@ const keycloak = new Keycloak({
 });
 
 const pinia = createPinia();
-export const api = new Api();
 
 export const logout = () => {
   localStorage.removeItem("keycloakToken");
@@ -34,7 +47,7 @@ function refreshToken() {
     .updateToken(90)
     .then((success) => {
       if (success && keycloak.token) {
-        api.setToken(keycloak.token);
+        token = keycloak.token;
       }
     })
     .catch(() => {
@@ -47,10 +60,8 @@ keycloak.init({ onLoad: "login-required" }).then(async (auth) => {
     window.location.reload();
   } else {
     if (!keycloak.token) return;
-    api.setToken(keycloak.token);
+    token = keycloak.token;
     startRender();
-    //const userStore = useUserStoreModule.useUserStore();
-    //userStore.getMe();
   }
   setInterval(() => {
     refreshToken();

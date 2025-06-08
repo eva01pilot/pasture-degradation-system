@@ -4,15 +4,6 @@
       <TypographyTitle :level="5">{{ model.name }}</TypographyTitle>
     </template>
     <template #default>
-      <!--
-      <Table
-        v-for="datasource in datasources"
-        size="small"
-        :data-source="datasource"
-        :pagination="{ pageSize: 5 }"
-        :columns
-      />
-      -->
       <div class="grid grid-cols-[96px_1fr]">
         <div>
           <canvas
@@ -25,14 +16,14 @@
       </div>
     </template>
     <template #actions>
-      <Button @click="emit('editClicked', model)">Редактировать</Button>
+      <slot name="actions" :polygon="model" />
     </template>
   </Card>
 </template>
 
 <script setup lang="ts">
 import { Button, Card, Table, TypographyTitle } from "ant-design-vue";
-import type { AppPolygon } from "../../../lib/polygonMachine";
+import type { AppPolygon } from "../../../store/polygons";
 import { computed } from "vue";
 import { useTemplateRef } from "vue";
 import { onMounted } from "vue";

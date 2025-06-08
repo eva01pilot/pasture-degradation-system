@@ -1,6 +1,15 @@
-import { createMachine, setup, assign } from "xstate";
-import type MapboxDraw from "@mapbox/mapbox-gl-draw";
-import type { Feature, Polygon as GeoPolygon, Position } from "geojson";
+import type { Position } from "geojson";
+
+export interface AppPolygonAnalytics {
+  ndvi_mean: number;
+  ndvi_std: number;
+  degradation_risk: "Низкий" | "Средний" | "Высокий";
+  vegetation_coverage: number;
+  soil_moisture: number;
+  area_hectares: number;
+  analysis_date: number;
+  coordinates_count: number;
+}
 
 export interface AppPolygon {
   name: string;
@@ -9,6 +18,8 @@ export interface AppPolygon {
   featureId: string;
   createdBy?: string;
   color: string;
+
+  analytics: AppPolygonAnalytics;
 }
 
 export const appPolygonToFeature = (

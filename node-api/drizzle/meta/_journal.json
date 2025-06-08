@@ -8,6 +8,20 @@
       "when": 1749312750621,
       "tag": "0000_charming_yellow_claw",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1749387068933,
+      "tag": "0001_mysterious_raza",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1749389321298,
+      "tag": "0002_peaceful_silver_fox",
+      "breakpoints": true
     }
   ]
 }

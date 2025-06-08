@@ -3,10 +3,10 @@ import { onMounted } from "vue";
 import DefaultLayout from "./components/layout/DefaultLayout.vue";
 import LeafletMap from "./components/LeafletMap.vue";
 import PolygonList from "./components/polygon/PolygonList.vue";
-import { api } from "./main";
+import { trpc } from "./main";
 
 onMounted(async () => {
-  await api.instance.post("/user/signup");
+  await trpc.user.signUp.mutate();
 });
 </script>
 

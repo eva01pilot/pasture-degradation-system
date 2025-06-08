@@ -27,10 +27,13 @@ services:
       - minio
     entrypoint: >
       /bin/sh -c "
+        set -e;
         sleep 5;
-        mc alias set local http://minio:9000 ${MINIO_ROOT_USER} ${MINIO_ROOT_PASSWORD};
-        mc mb -p local/${MINIO_DATASET_BUCKET} || true;
-        mc mb -p local/${MINIO_RESULTS_BUCKET} || true;
+        mc alias set local http://minio:9000 \"$MINIO_ROOT_USER\" \"$MINIO_ROOT_PASSWORD\";
+        mc mb -p local/$MINIO_DATASET_BUCKET || true;
+        mc mb -p local/$MINIO_RESULTS_BUCKET || true;
+        mc anonymous set download local/$MINIO_DATASET_BUCKET;
+        mc anonymous set download local/$MINIO_RESULTS_BUCKET;
       "
     environment:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER}
