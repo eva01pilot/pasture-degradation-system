@@ -6,6 +6,14 @@ import {
 } from "@trpc/server/adapters/fastify";
 import * as Minio from "minio";
 import { appRouter } from "./trpc/router";
+import cors from "@fastify/cors";
+import {
+  createOpenApiHttpHandler,
+  fastifyTRPCOpenApiPlugin,
+} from "trpc-to-openapi";
+import fastifySwagger from "@fastify/swagger";
+import fastifySwaggerUI from "@fastify/swagger-ui";
+import { openApiDocument } from "./trpc/router";
 
 const app = Fastify();
 const PORT = 3000;
@@ -18,7 +26,7 @@ export const minioClient = new Minio.Client({
 });
 
 await app.register(fastifyTRPCPlugin, {
-  prefix: "/",
+  prefix: "/trpc",
   trpcOptions: {
     router: appRouter,
     createContext: async ({ req }: CreateFastifyContextOptions) => {
@@ -41,10 +49,36 @@ await app.register(fastifyTRPCPlugin, {
   },
 });
 
-app.listen({ port: PORT, host: "0.0.0.0" }, (err) => {
-  if (err) {
-    console.error(err);
-    process.exit(1);
-  }
-  console.log(`Server running on http://localhost:${PORT}`);
+await app.register(fastifyTRPCOpenApiPlugin, { router: appRouter });
+
+app.get("/openapi.json", () => openApiDocument);
+await app.register(fastifySwagger, {
+  mode: "static",
+  specification: { document: openApiDocument },
+});
+await app.register(fastifySwaggerUI, {
+  routePrefix: "/documentation",
+  indexPrefix: "/api",
+  uiConfig: {
+    docExpansion: "full",
+    deepLinking: false,
+  },
+  uiHooks: {
+    onRequest: function (request, reply, next) {
+      next();
+    },
+    preHandler: function (request, reply, next) {
+      next();
+    },
+  },
+  staticCSP: true,
+  transformStaticCSP: (header) => header,
+  transformSpecification: (swaggerObject, request, reply) => {
+    return swaggerObject;
+  },
+
+  transformSpecificationClone: true,
+});
+app.listen({ port: PORT, host: "0.0.0.0" }).then(() => {
+  app.swagger();
 });

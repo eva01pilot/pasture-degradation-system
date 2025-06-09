@@ -23,6 +23,7 @@ services:
     build: ./node-api
     ports:
       - "3000:3000"
+      - "3002:3002"
     volumes:
       - ./node-api/src:/app/src
       - ./node-api/drizzle:/app/drizzle

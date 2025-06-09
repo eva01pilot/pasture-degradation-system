@@ -14,19 +14,33 @@ import { polygonCreateSchema } from "../validation/polygon";
 import { minioClient } from "../..";
 import { base64toBuffer } from "../../utils/base64toBuffer";
 import { uploadFileToBucket } from "../../services/fileUpload";
+import {
+  getPolygonsResultSchema,
+  analyzePolygonResultSchema,
+  getPolygonAnalyticsResultSchema,
+  updatePolygonResultSchema,
+  createPolygonResultSchema,
+} from "../validation/polygon.output";
+import { z } from "zod";
 export const polygonRouter = t.router({
-  getPolygons: protectedProcedure.query(async ({ ctx }) => {
-    const userID = ctx.userID;
+  getPolygons: protectedProcedure
+    .meta({ openapi: { method: "GET", path: "/polygons" } })
+    .input(z.undefined())
+    .output(getPolygonsResultSchema)
+    .query(async ({ ctx, input }) => {
+      const userID = ctx.userID;
 
-    const allPolygons = await db
-      .select()
-      .from(polygons)
-      .where(eq(polygons.createdBy, userID));
+      const allPolygons = await db
+        .select()
+        .from(polygons)
+        .where(eq(polygons.createdBy, userID));
 
-    return { polygons: allPolygons };
-  }),
+      return { polygons: allPolygons };
+    }),
   analyzePolygon: protectedProcedure
+    .meta({ openapi: { method: "POST", path: "/polygons/analyze" } })
     .input(analyzePolygonRequestSchema)
+    .output(analyzePolygonResultSchema)
     .query(async ({ ctx, input }) => {
       const req = ctx.req;
       const res = await fetch("http://python-api:3001/analyze", {
@@ -80,7 +94,9 @@ export const polygonRouter = t.router({
       return { success: true };
     }),
   getPolygonAnalytics: protectedProcedure
+    .meta({ openapi: { method: "GET", path: "/polygons/analyze" } })
     .input(polygonRequestAnalyticsSchema)
+    .output(getPolygonAnalyticsResultSchema)
     .query(async (opts) => {
       const res = await db
         .select()
@@ -91,7 +107,9 @@ export const polygonRouter = t.router({
       return res;
     }),
   updatePolygon: protectedProcedure
+    .meta({ openapi: { method: "PUT", path: "/polygons/{featureId}" } })
     .input(polygonUpdateSchema)
+    .output(updatePolygonResultSchema)
     .mutation(async (opts) => {
       const user = await db
         .select()
@@ -108,10 +126,12 @@ export const polygonRouter = t.router({
           name: opts.input.name,
         })
         .where(eq(polygons.featureId, opts.input.featureId));
-      return dbRes;
+      return { success: true };
     }),
   createPolygon: protectedProcedure
+    .meta({ openapi: { method: "POST", path: "/polygons" } })
     .input(polygonCreateSchema)
+    .output(createPolygonResultSchema)
     .mutation(async (opts) => {
       const user = await db
         .select()
@@ -126,6 +146,6 @@ export const polygonRouter = t.router({
         name: opts.input.name,
         color: opts.input.color,
       });
-      return dbRes;
+      return { success: true };
     }),
 });
