@@ -1,8 +1,5 @@
 <script setup lang="ts">
 import { onMounted } from "vue";
-import DefaultLayout from "./components/layout/DefaultLayout.vue";
-import LeafletMap from "./components/LeafletMap.vue";
-import PolygonList from "./components/polygon/PolygonList.vue";
 import { trpc } from "./main";
 
 onMounted(async () => {
@@ -11,15 +8,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <DefaultLayout>
-    <template #drawer-title>Полигоны</template>
-    <template #drawer-default>
-      <PolygonList class="min-w-64" />
-    </template>
-    <template #default>
-      <LeafletMap class="h-full w-full" />
-    </template>
-  </DefaultLayout>
+  <RouterView />
 </template>
 
 <style scoped>

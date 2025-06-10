@@ -26,8 +26,6 @@ const fileSchema = z.object({
 });
 
 const analysisSchema = z.object({
-  id: z.string(),
-  polygonId: z.string(),
   ndvi_std: z.string().nullable(),
   ndvi_mean: z.string().nullable(),
   degradation_risk: z.enum(["Низкий", "Средний", "Высокий"]).nullable(),
@@ -36,14 +34,10 @@ const analysisSchema = z.object({
   soil_moisture: z.string().nullable(),
   area_hectares: z.string().nullable(),
   coordinates_count: z.string().nullable(),
+  rasterFile: z.string().nullable(),
 });
 
-export const getPolygonAnalyticsResultSchema = z.array(
-  z.object({
-    analyses: analysisSchema,
-    files: fileSchema,
-  }),
-);
+export const getPolygonAnalyticsResultSchema = z.array(analysisSchema);
 
 export const updatePolygonResultSchema = z.object({
   success: z.literal(true),

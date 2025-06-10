@@ -1,18 +1,14 @@
 <template>
-  <Card class="">
+  <Card
+    :data-active="active"
+    class="data-[active=true]:!border-2 data-[active=true]:!border-green-500"
+  >
     <template #title>
       <TypographyTitle :level="5">{{ model.name }}</TypographyTitle>
     </template>
     <template #default>
-      <div class="grid grid-cols-[96px_1fr]">
-        <div>
-          <canvas
-            width="96"
-            height="48"
-            class="h-full w-full"
-            ref="polygonCanvas"
-          ></canvas>
-        </div>
+      <div ref="canvasContainer" class="h-64 w-full">
+        <canvas class="w-full h-auto" ref="polygonCanvas"></canvas>
       </div>
     </template>
     <template #actions>
@@ -29,134 +25,110 @@ import { useTemplateRef } from "vue";
 import { onMounted } from "vue";
 
 import { useElementSize } from "@vueuse/core";
+import { watch } from "vue";
 
 const model = defineModel<AppPolygon>({ required: true });
 
 const props = defineProps<{
-  mode: "readonly" | "edit";
+  active: boolean;
 }>();
 
 const emit = defineEmits<{
   editClicked: [AppPolygon];
 }>();
 
-const datasources = computed(() => {
-  return model.value.coordinates.map((ring, ringIdx) =>
-    ring.map((coord, coordIdx) => ({
-      key: `${ringIdx}-${coordIdx}`,
-      lat: coord[0],
-      lon: coord[1],
-    })),
-  );
-});
-
-const columns = [
-  {
-    title: "Широта",
-    dataIndex: "lat",
-    key: "lat",
-  },
-  {
-    title: "Долгота",
-    dataIndex: "lon",
-    key: "lon",
-  },
-];
-
 const polygonCanvas = useTemplateRef("polygonCanvas");
+const canvasContainer = useTemplateRef("canvasContainer");
 const { width, height } = useElementSize(polygonCanvas);
-const coordinateSpaceToCanvas = computed(() => {
-  return model.value.coordinates.map((ring) =>
-    ring.map((pos) => {
-      const lat = pos[0];
-      const lon = pos[0];
 
-      const x = (lon + 90) / 180;
-      const y = (lat + 180) / 360;
-
-      const xFit = x * width.value;
-      const yFit = y * height.value;
-
-      return [xFit, yFit];
-    }),
-  );
-});
+const { width: canvasContainerWidth, height: canvasContainerHeight } =
+  useElementSize(canvasContainer);
 
 function normalizeCoordinatesToCanvas(
   coordinates: number[][][],
   canvasWidth: number,
   canvasHeight: number,
-  padding: number = 0,
-  flipY: boolean = true,
+  padding: number = 10,
 ): number[][][] {
-  let minX = Infinity,
-    maxX = -Infinity;
-  let minY = Infinity,
-    maxY = -Infinity;
+  if (canvasWidth <= 0 || canvasHeight <= 0) return [];
 
-  coordinates.forEach((ring) => {
-    ring.forEach(([x, y]) => {
-      minX = Math.min(minX, x);
-      maxX = Math.max(maxX, x);
-      minY = Math.min(minY, y);
-      maxY = Math.max(maxY, y);
-    });
-  });
+  // Find bounds
+  const allCoords = coordinates.flat(1);
+  const lons = allCoords.map((coord) => coord[0]);
+  const lats = allCoords.map((coord) => coord[1]);
 
-  const mapWidth = maxX - minX;
-  const mapHeight = maxY - minY;
+  const minLon = Math.min(...lons);
+  const maxLon = Math.max(...lons);
+  const minLat = Math.min(...lats);
+  const maxLat = Math.max(...lats);
 
-  const scaleX = (canvasWidth - 2 * padding) / mapWidth;
-  const scaleY = (canvasHeight - 2 * padding) / mapHeight;
-  const scale = Math.min(scaleX, scaleY); // uniform scaling
+  // Calculate aspect ratio-preserving scale
+  const mapWidth = maxLon - minLon;
+  const mapHeight = maxLat - minLat;
 
-  const offsetX = padding - minX * scale;
-  const offsetY = flipY
-    ? canvasHeight - padding + minY * scale // flipped Y
-    : padding - minY * scale;
+  const scale = Math.min(
+    (canvasWidth - padding * 2) / (mapWidth || 1),
+    (canvasHeight - padding * 2) / (mapHeight || 1),
+  );
 
-  const normalized = coordinates.map((ring) =>
-    ring.map(([x, y]) => {
-      const newX = x * scale + offsetX;
-      const newY = flipY
-        ? -y * scale + offsetY // flip Y if needed
-        : y * scale + offsetY;
-      return [newX, newY];
+  // Normalize coordinates
+  return coordinates.map((ring) =>
+    ring.map(([lon, lat]) => {
+      const x = padding + (lon - minLon) * scale;
+      const y = canvasHeight - padding - (lat - minLat) * scale; // Flip Y
+      return [x, y];
     }),
   );
-
-  return normalized;
 }
-
-onMounted(() => {
+function drawPolygon() {
   if (!polygonCanvas.value) return;
-  const normalized = normalizeCoordinatesToCanvas(
-    model.value.coordinates,
-    width.value,
-    height.value,
-  );
+
+  polygonCanvas.value.width = Number(canvasContainerWidth.value.toFixed(0));
+  polygonCanvas.value.height = Number(canvasContainerHeight.value.toFixed(0));
+
   const ctx = polygonCanvas.value.getContext("2d");
   if (!ctx) return;
+
+  ctx.clearRect(0, 0, polygonCanvas.value.width, polygonCanvas.value.height);
+
+  const normalized = normalizeCoordinatesToCanvas(
+    model.value.coordinates,
+    canvasContainerWidth.value,
+    canvasContainerHeight.value,
+  );
+  console.log(normalized);
+
+  if (normalized.length === 0) return;
+
   ctx.fillStyle = model.value.color;
-  ctx.beginPath(); // Only once for the whole shape
+  console.log(ctx);
+  ctx.beginPath();
 
   normalized.forEach((ring) => {
     if (ring.length < 2) return;
 
-    // Start from the first point
     const [startX, startY] = ring[0];
     ctx.moveTo(startX, startY);
 
-    // Draw lines to the rest
     for (let i = 1; i < ring.length; i++) {
       const [x, y] = ring[i];
+      console.log(x, y);
       ctx.lineTo(x, y);
     }
 
-    // Optionally close the ring (if not closed already)
     ctx.closePath();
   });
 
-  ctx.fill(); // Fill after all rings
-});
+  ctx.fill();
+}
+
+watch(
+  [
+    () => canvasContainerWidth.value,
+    () => canvasContainerHeight.value,
+    () => model.value.coordinates,
+  ],
+  () => drawPolygon(),
+  { immediate: true },
+);
 </script>

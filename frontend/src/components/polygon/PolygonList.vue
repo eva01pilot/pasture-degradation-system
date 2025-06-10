@@ -5,18 +5,15 @@
     </Button>
     <PolygonCard
       v-for="(polygon, i) in polygons"
-      mode="edit"
       v-model="polygons[i]"
+      :active="polygonStore.selectedPolygon?.featureId === polygon.featureId"
+      class="px-2"
     >
       <template #actions>
-        <div class="flex">
+        <div class="flex px-4 justify-between">
           <Button @click="openEditPopup(polygon)"> Редактировать </Button>
-          <Button
-            @click="
-              polygonStore.analyze(polygon.coordinates, polygon.featureId)
-            "
-          >
-            Проанализировать деградацию
+          <Button @click="emit('goTo', polygon)">
+            <ArrowRightOutlined />
           </Button>
         </div>
       </template>
@@ -66,6 +63,7 @@ import EditPolygonPopup from "../map/EditPolygonPopup.vue";
 import { appPolygonToFeature } from "../../store/polygons";
 import { onMounted } from "vue";
 import { centroid } from "@turf/turf";
+import { ArrowRightOutlined } from "@ant-design/icons-vue";
 
 const polygonStore = usePolygonsStore();
 const { polygons } = storeToRefs(polygonStore);
@@ -85,6 +83,10 @@ const openEditPopup = (poly: AppPolygon) => {
     feature: appPolygonToFeature(poly),
   };
 };
+
+const emit = defineEmits<{
+  goTo: [AppPolygon];
+}>();
 
 onMounted(() => {
   polygonStore.fetchPolygonData();

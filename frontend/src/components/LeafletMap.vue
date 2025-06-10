@@ -6,8 +6,6 @@ import { usePolygonsStore } from "../store/polygons";
 import { storeToRefs } from "pinia";
 import { watch } from "vue";
 import { shallowRef } from "vue";
-import { appPolygonToFeature } from "../lib/polygonMachine";
-import { getRandomVibrantColor } from "../lib/utils";
 
 const mapRef = useTemplateRef("mapRef");
 
@@ -24,35 +22,13 @@ onMounted(() => {
 watch(
   polygons,
   (newPolygons, oldPolygons) => {
-    oldPolygons.forEach((poly) => {
-      if (map.value?.map.getLayer(poly.featureId))
-        map.value?.map.removeLayer(poly.featureId);
-      if (map.value?.map.getSource(poly.featureId))
-        map.value?.map.removeSource(poly.featureId);
-    });
-    console.log(newPolygons);
-    newPolygons.forEach((poly) => {
-      map.value?.map.addSource(poly.featureId, {
-        type: "geojson",
-        data: {
-          type: "FeatureCollection",
-          features: [appPolygonToFeature(poly)],
-        },
-      });
-
-      map.value?.map.addLayer({
-        id: poly.featureId,
-        type: "fill",
-        source: poly.featureId,
-        paint: {
-          "fill-color": poly.color,
-          "fill-opacity": 0.9,
-        },
-      });
-    });
+    map.value?.removePolygons(oldPolygons);
+    map.value?.addPolygons(newPolygons);
   },
   { deep: true },
 );
+
+defineExpose({ map });
 </script>
 
 <template>

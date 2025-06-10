@@ -22,6 +22,7 @@ import {
   createPolygonResultSchema,
 } from "../validation/polygon.output";
 import { z } from "zod";
+import path from "path";
 export const polygonRouter = t.router({
   getPolygons: protectedProcedure
     .meta({ openapi: { method: "GET", path: "/polygons" } })
@@ -81,7 +82,7 @@ export const polygonRouter = t.router({
       await uploadFileToBucket(bucket!, filename, mimeType, buffer);
       const analysisID = dbRes[0].id;
 
-      const path = `${process.env.DOMAIN}/minio/${bucket}/${encodeURIComponent(filename)}`;
+      const path = `http://${process.env.DOMAIN}/minio/${bucket}/${encodeURIComponent(filename)}`;
 
       await db.insert(files).values({
         analysisId: analysisID,
@@ -99,7 +100,17 @@ export const polygonRouter = t.router({
     .output(getPolygonAnalyticsResultSchema)
     .query(async (opts) => {
       const res = await db
-        .select()
+        .select({
+          ndvi_mean: analyses.ndvi_mean,
+          ndvi_std: analyses.ndvi_std,
+          rasterFile: files.path,
+          degradation_risk: analyses.degradation_risk,
+          vegetation_coverage: analyses.vegetation_coverage,
+          soil_moisture: analyses.soil_moisture,
+          area_hectares: analyses.area_hectares,
+          analysis_date: analyses.analysis_date,
+          coordinates_count: analyses.coordinates_count,
+        })
         .from(analyses)
         .where(eq(analyses.polygonId, opts.input.id))
         .innerJoin(files, eq(analyses.id, files.analysisId));
