@@ -6,29 +6,25 @@ import { usePolygonsStore } from "../store/polygons";
 import { storeToRefs } from "pinia";
 import { watch } from "vue";
 import { shallowRef } from "vue";
+import { useMapStore } from "../store/map";
 
 const mapRef = useTemplateRef("mapRef");
 
 const polygonStore = usePolygonsStore();
 const { polygons } = storeToRefs(polygonStore);
 
-const map = shallowRef<MGLMap>();
+const mapStore = useMapStore();
 
 onMounted(() => {
   if (!mapRef.value) return;
-  map.value = new MGLMap(mapRef.value);
+  mapStore.addMap(mapRef.value);
 });
 
-watch(
-  polygons,
-  (newPolygons, oldPolygons) => {
-    map.value?.removePolygons(oldPolygons);
-    map.value?.addPolygons(newPolygons);
-  },
-  { deep: true },
-);
-
-defineExpose({ map });
+watch(polygons, () => {
+  polygons.value.forEach((poly) => {
+    mapStore.mapPolygonService.addPolygon(poly);
+  });
+});
 </script>
 
 <template>

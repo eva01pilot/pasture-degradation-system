@@ -61,15 +61,14 @@ export class PolygonRasterAnalytics {
       return;
     }
 
-    const previousId =
-      this.visibleRasterIndex !== null
-        ? this.getRasterId(this.rasterAnalytics[this.visibleRasterIndex].date)
-        : null;
-    const nextId = this.getRasterId(this.rasterAnalytics[index].date);
+    for (let i = 0; i < this.rasterAnalytics.length; i++) {
+      if (i === index) continue;
 
-    if (previousId) {
-      this.mapService.hideLayer(previousId);
+      console.log(this.getRasterId(this.rasterAnalytics[i].date));
+      this.mapService.hideLayer(this.getRasterId(this.rasterAnalytics[i].date));
     }
+
+    const nextId = this.getRasterId(this.rasterAnalytics[index].date);
 
     this.mapService.showLayer(nextId);
     this.visibleRasterIndex = index;

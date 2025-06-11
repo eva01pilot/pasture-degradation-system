@@ -32,6 +32,7 @@ export class UserPolygonService {
         },
       },
     });
+    console.log(this.mapService.getLayer(this.featureToId(polygon.featureId)));
   }
 
   removePolygon(polygon: AppPolygon) {

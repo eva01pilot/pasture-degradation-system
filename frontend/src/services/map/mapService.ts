@@ -55,11 +55,12 @@ export class MapService {
     this.map?.addSource(layer.id, layer.source);
     this.map?.addLayer(layer.layer);
     this.layers.push(layer);
+    console.log(this.layers);
   }
 
   removeLayer(id: string) {
-    this.map?.removeSource(id);
     this.map?.removeLayer(id);
+    this.map?.removeSource(id);
     this.layers.splice(
       this.layers.findIndex((l) => l.id === id),
       1,

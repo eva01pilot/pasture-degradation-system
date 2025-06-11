@@ -5,6 +5,7 @@ import { UserPolygonService } from "../services/map/mapPolygonService";
 import { UserRasterService } from "../services/map/mapRasterService";
 import { usePolygonsStore } from "./polygons";
 import { watch } from "vue";
+import { ref } from "vue";
 
 export const useMapStore = defineStore("map", () => {
   const map = new MapService();
@@ -19,6 +20,8 @@ export const useMapStore = defineStore("map", () => {
     mapRasterService,
     map,
   );
+
+  const selectedRasterIndex = ref<number>();
 
   const addMap = (el: HTMLElement) => {
     map.initMap(el, [10, 40]).setupNavigationControl();
@@ -45,5 +48,9 @@ export const useMapStore = defineStore("map", () => {
     },
   );
 
-  return { addMap };
+  watch(selectedRasterIndex, (v) => {
+    polygonAnalyticsService.switchRasterByIndex(v!);
+  });
+
+  return { addMap, mapPolygonService, selectedRasterIndex };
 });

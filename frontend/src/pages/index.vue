@@ -22,10 +22,11 @@ import { usePolygonsStore, type AppPolygon } from "../store/polygons";
 import PolygonDashboard from "../components/polygon/PolygonDashboard.vue";
 import { watch } from "vue";
 import { storeToRefs } from "pinia";
+import { useMapStore } from "../store/map";
 
 const map = useTemplateRef("map");
-const polygonStore = usePolygonsStore();
 
+const polygonStore = usePolygonsStore();
 const { selectedPolygon } = storeToRefs(polygonStore);
 
 const goToPolygon = (poly: AppPolygon) => {
