@@ -1,4 +1,4 @@
-import mgl, { type Feature, type IControl } from "maplibre-gl";
+import mgl, { type IControl } from "maplibre-gl";
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import {
   MAPBOXGL_DRAW_STYLES,

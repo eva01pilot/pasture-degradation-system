@@ -5,7 +5,7 @@
       <PolygonList class="min-w-64" @go-to="goToPolygon" />
     </template>
     <template #default>
-      <LeafletMap ref="map" class="h-full w-full" />
+      <Map ref="map" class="h-full w-full" />
     </template>
     <template #dashboard>
       <PolygonDashboard />
@@ -16,7 +16,7 @@
 <script setup lang="ts">
 import { useTemplateRef } from "vue";
 import DefaultLayout from "../components/layout/DefaultLayout.vue";
-import LeafletMap from "../components/LeafletMap.vue";
+import Map from "../components/Map.vue";
 import PolygonList from "../components/polygon/PolygonList.vue";
 import { usePolygonsStore, type AppPolygon } from "../store/polygons";
 import PolygonDashboard from "../components/polygon/PolygonDashboard.vue";
