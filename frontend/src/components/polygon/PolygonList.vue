@@ -5,7 +5,7 @@
     </Button>
     <PolygonCard
       v-for="(polygon, i) in polygons"
-      v-model="polygons[i]"
+      :polygon="polygons[i]"
       :active="polygonStore.selectedPolygon?.featureId === polygon.featureId"
       class="px-2"
     >

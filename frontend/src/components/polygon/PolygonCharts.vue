@@ -1,13 +1,22 @@
 <template>
-  <Tabs type="card">
-    <TabPane v-for="tab in tabs" :key="tab.key" :tab="tab.title">
-      <div class="chart-container">
-        <canvas
-          :ref="(el) => setChartRef(el as HTMLCanvasElement, tab.key)"
-        ></canvas>
-      </div>
-    </TabPane>
-  </Tabs>
+  <div class="grid grid-cols-[1fr_3fr]">
+    <div class="grid grid-rows-5">
+      <button
+        v-for="tab in tabs"
+        :style="{ backgroundColor: tab.color }"
+        class="p-4"
+        @click="selectedTab = tab"
+      >
+        {{ tab.title }}
+      </button>
+    </div>
+    <template v-for="tab in tabs" :key="tab.key">
+      <canvas
+        v-if="tab.key === selectedTab.key"
+        :ref="(el) => setChartRef(el as HTMLCanvasElement, tab.key)"
+      />
+    </template>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -66,7 +75,9 @@ const tabs: ChartTab[] = [
     color: "#597ef7",
     unit: " га",
   },
-];
+] as const;
+
+const selectedTab = ref(tabs[0]);
 
 const setChartRef = (el: HTMLCanvasElement | null, tabKey: string) => {
   if (!el) return;

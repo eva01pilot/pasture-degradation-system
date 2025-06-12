@@ -4,21 +4,40 @@
     class="data-[active=true]:!border-2 data-[active=true]:!border-green-500"
   >
     <template #title>
-      <TypographyTitle :level="5">{{ model.name }}</TypographyTitle>
+      <TypographyTitle :level="5">{{ polygon.name }}</TypographyTitle>
     </template>
     <template #default>
-      <div ref="canvasContainer" class="h-64 w-full">
-        <canvas class="w-full h-auto" ref="polygonCanvas"></canvas>
+      <div class="flex flex-col w-full">
+        <div ref="canvasContainer" class="w-32 self-end">
+          <canvas class="w-full h-auto" ref="polygonCanvas"></canvas>
+        </div>
+
+        <Tabs type="card">
+          <TabPane
+            v-for="(ring, i) in datasources"
+            :key="`ring-${i}`"
+            :tab="`Кольцо ${i}`"
+          >
+            <Table size="small" :columns :data-source="ring" />
+          </TabPane>
+        </Tabs>
       </div>
     </template>
     <template #actions>
-      <slot name="actions" :polygon="model" />
+      <slot name="actions" :polygon />
     </template>
   </Card>
 </template>
 
 <script setup lang="ts">
-import { Button, Card, Table, TypographyTitle } from "ant-design-vue";
+import {
+  Button,
+  Card,
+  Table,
+  TabPane,
+  Tabs,
+  TypographyTitle,
+} from "ant-design-vue";
 import type { AppPolygon } from "../../../store/polygons";
 import { computed } from "vue";
 import { useTemplateRef } from "vue";
@@ -26,60 +45,19 @@ import { onMounted } from "vue";
 
 import { useElementSize } from "@vueuse/core";
 import { watch } from "vue";
-
-const model = defineModel<AppPolygon>({ required: true });
+import { normalizeCoordinatesToCanvas } from "../../../lib/utils";
 
 const props = defineProps<{
   active: boolean;
-}>();
-
-const emit = defineEmits<{
-  editClicked: [AppPolygon];
+  polygon: AppPolygon;
 }>();
 
 const polygonCanvas = useTemplateRef("polygonCanvas");
 const canvasContainer = useTemplateRef("canvasContainer");
-const { width, height } = useElementSize(polygonCanvas);
 
 const { width: canvasContainerWidth, height: canvasContainerHeight } =
   useElementSize(canvasContainer);
 
-function normalizeCoordinatesToCanvas(
-  coordinates: number[][][],
-  canvasWidth: number,
-  canvasHeight: number,
-  padding: number = 10,
-): number[][][] {
-  if (canvasWidth <= 0 || canvasHeight <= 0) return [];
-
-  // Find bounds
-  const allCoords = coordinates.flat(1);
-  const lons = allCoords.map((coord) => coord[0]);
-  const lats = allCoords.map((coord) => coord[1]);
-
-  const minLon = Math.min(...lons);
-  const maxLon = Math.max(...lons);
-  const minLat = Math.min(...lats);
-  const maxLat = Math.max(...lats);
-
-  // Calculate aspect ratio-preserving scale
-  const mapWidth = maxLon - minLon;
-  const mapHeight = maxLat - minLat;
-
-  const scale = Math.min(
-    (canvasWidth - padding * 2) / (mapWidth || 1),
-    (canvasHeight - padding * 2) / (mapHeight || 1),
-  );
-
-  // Normalize coordinates
-  return coordinates.map((ring) =>
-    ring.map(([lon, lat]) => {
-      const x = padding + (lon - minLon) * scale;
-      const y = canvasHeight - padding - (lat - minLat) * scale; // Flip Y
-      return [x, y];
-    }),
-  );
-}
 function drawPolygon() {
   if (!polygonCanvas.value) return;
 
@@ -92,16 +70,14 @@ function drawPolygon() {
   ctx.clearRect(0, 0, polygonCanvas.value.width, polygonCanvas.value.height);
 
   const normalized = normalizeCoordinatesToCanvas(
-    model.value.coordinates,
+    props.polygon.coordinates,
     canvasContainerWidth.value,
     canvasContainerHeight.value,
   );
-  console.log(normalized);
 
   if (normalized.length === 0) return;
 
-  ctx.fillStyle = model.value.color;
-  console.log(ctx);
+  ctx.fillStyle = props.polygon.color;
   ctx.beginPath();
 
   normalized.forEach((ring) => {
@@ -112,7 +88,6 @@ function drawPolygon() {
 
     for (let i = 1; i < ring.length; i++) {
       const [x, y] = ring[i];
-      console.log(x, y);
       ctx.lineTo(x, y);
     }
 
@@ -126,9 +101,32 @@ watch(
   [
     () => canvasContainerWidth.value,
     () => canvasContainerHeight.value,
-    () => model.value.coordinates,
+    () => props.polygon.coordinates,
   ],
   () => drawPolygon(),
   { immediate: true },
 );
+
+const datasources = computed(() => {
+  return props.polygon?.coordinates.map((ring, ringIdx) =>
+    ring.map((coord, coordIdx) => ({
+      key: `${ringIdx}-${coordIdx}`,
+      lat: coord[0],
+      lon: coord[1],
+    })),
+  );
+});
+
+const columns = [
+  {
+    title: "Широта",
+    dataIndex: "lat",
+    key: "lat",
+  },
+  {
+    title: "Долгота",
+    dataIndex: "lon",
+    key: "lon",
+  },
+];
 </script>

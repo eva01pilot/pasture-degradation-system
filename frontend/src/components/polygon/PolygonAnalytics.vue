@@ -1,20 +1,14 @@
 <template>
-  <Tabs type="card">
-    <TabPane
-      v-for="(analytics, i) in datasources"
-      :key="`analytics-${i}`"
-      :tab="`Аналитика за ${analytics.date}`"
-    >
-      <List :data-source="analytics.rows">
-        <template #renderItem="{ item }">
-          <div class="grid grid-cols-2 text-wrap">
-            <span class="text-lg font-bold">{{ item.title }}</span>
-            <span class="text-lg text-wrap">{{ item.value }}</span>
-          </div>
-        </template>
-      </List>
-    </TabPane>
-  </Tabs>
+  <List :data-source="datasource.rows">
+    <template #renderItem="{ item }">
+      <div class="grid grid-cols-2 text-wrap border-b border-b-gray-200">
+        <span class="text-lg font-bold text-wrap break-words">{{
+          item.title
+        }}</span>
+        <span class="text-lg text-wrap">{{ item.value }}</span>
+      </div>
+    </template>
+  </List>
 </template>
 
 <script setup lang="ts">
@@ -23,27 +17,26 @@ import type { AppPolygon } from "../../store/polygons";
 import { computed } from "vue";
 
 const props = defineProps<{
-  analytics: NonNullable<AppPolygon["analytics"]>;
+  analytics: NonNullable<AppPolygon["analytics"]>[number];
 }>();
 
-const datasources = computed(() => {
-  return props.analytics.map((an) => {
-    const rows = Object.keys(an)
-      .filter(
-        (key) => key !== "id" && key !== "polygonId" && key !== "rasterFile",
-      )
-      .map((key) => {
-        const item = an[key as keyof typeof an];
-        return {
-          title: key,
-          value: item,
-        };
-      });
+const datasource = computed(() => {
+  const rows = Object.keys(props.analytics)
+    .filter(
+      (key) => key !== "id" && key !== "polygonId" && key !== "rasterFile",
+    )
+    .map((key) => {
+      console.log(key);
+      const item = props.analytics[key as keyof typeof props.analytics];
+      return {
+        title: key,
+        value: item,
+      };
+    });
 
-    return {
-      date: an.analysis_date,
-      rows,
-    };
-  });
+  return {
+    date: props.analytics.analysis_date,
+    rows,
+  };
 });
 </script>
