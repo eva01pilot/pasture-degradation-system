@@ -18,7 +18,7 @@ let token = "";
 export const trpc = createTRPCClient<AppRouter>({
   links: [
     httpBatchLink({
-      url: import.meta.env.VITE_API_BASE_URL,
+      url: "http://localhost/api/trpc",
       headers: () => {
         return {
           Authorization: `Bearer ${token}`,

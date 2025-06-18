@@ -169,7 +169,7 @@ export const usePolygonsStore = defineStore("polygons", () => {
   const fetchPolygonData = async () => {
     const res = await trpc.polygon.getPolygons.query();
     polygons.value = res.polygons as AppPolygon[];
-    selectedPolygon.value = polygons.value.at(0);
+    if (!selectedPolygon.value) selectedPolygon.value = polygons.value.at(0);
     fetchAnalytics();
   };
 

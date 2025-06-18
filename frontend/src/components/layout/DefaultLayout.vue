@@ -10,7 +10,7 @@
     >
       <aside
         v-if="defaultDrawerOpen"
-        class="min-w-96 bg-white p-4 overflow-y-auto border-r border-r-gray-200"
+        class="w-fit bg-white p-4 overflow-y-auto border-r border-r-gray-200"
       >
         <div>
           <slot name="drawer-default" />
@@ -18,7 +18,7 @@
       </aside>
       <aside
         v-if="additionalDrawerOpen"
-        class="min-w-96 bg-white p-4 overflow-y-auto"
+        class="w-fit bg-white p-4 overflow-y-auto"
       >
         <slot name="drawer-additional" />
       </aside>

@@ -26,6 +26,7 @@ export class PolygonRasterAnalytics {
     this.clearRasters();
 
     this.selectedPolygon = polygon;
+    this.mapService.goToBounds(polygon.coordinates[0]);
     this.visibleRasterIndex = null;
 
     if (this.rasterAnalytics.length) {

@@ -1,0 +1,32 @@
+@startuml
+left to right direction
+
+package "Frontend" {
+  [Vue.js 3] --> [Maplibre GL : Map Rendering]
+  [Vue.js 3] --> [Fastify API : REST API]
+}
+
+package "Backend" {
+  [Node.js] --> [Fastify API]
+  [Fastify API] --> [Drizzle ORM : ORM Layer]
+  [Fastify API] --> [MinIO : Image Storage]
+  [Fastify API] --> [PostgreSQL + PostGIS : Database]
+  [Fastify API] --> [Keycloak : Authentication]
+}
+
+package "Storage and Database" {
+  [PostgreSQL + PostGIS]
+  [MinIO]
+}
+
+package "Authentication" {
+  [Keycloak]
+}
+
+package "Infrastructure" {
+  [Caddy : Reverse Proxy]
+  [Caddy] --> [Vue.js 3]
+  [Caddy] --> [Fastify API]
+}
+
+@enduml

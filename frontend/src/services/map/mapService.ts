@@ -1,4 +1,5 @@
 import maplibre from "maplibre-gl";
+import { getBoundingBox } from "../../store/polygons";
 export class MapService {
   map: maplibre.Map | null = null;
   layers: {
@@ -84,5 +85,10 @@ export class MapService {
       return this.hideLayer(id);
     }
     return this.showLayer(id);
+  }
+
+  goToBounds(coordinates: number[][]) {
+    const bbox = getBoundingBox(coordinates);
+    this.map?.fitBounds(bbox!, { duration: 200 });
   }
 }

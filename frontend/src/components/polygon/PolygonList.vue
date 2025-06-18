@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col gap-4 h-full overflow-auto">
     <Button class="w-full" @click="createPopupOpen = true"
-      >Create Polygon
+      >Создать полигон
     </Button>
     <PolygonCard
       v-for="(polygon, i) in polygons"

@@ -52,22 +52,8 @@ const dashboardOpen = ref(false);
 
 const goToPolygon = (poly: AppPolygon) => {
   polygonStore.selectedPolygon = poly;
+  polygonStore.fetchPolygonData();
   additionalDrawerOpen.value = true;
   dashboardOpen.value = true;
 };
-
-watch(
-  [() => selectedPolygon.value, () => selectedPolygon.value?.analytics],
-  (newVal, oldVal) => {
-    if (oldVal[1] !== undefined) {
-      map.value?.map?.removePolygonHeatmap(oldVal[0]!);
-    }
-    if (newVal !== undefined) {
-      map.value?.map?.addPolygonHeatmap(newVal[0]!);
-    }
-  },
-  {
-    immediate: true,
-  },
-);
 </script>
