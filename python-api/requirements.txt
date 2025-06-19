@@ -1,4 +1,9 @@
 fastapi
-pillow
-uvicorn[standard]
 pydantic
+uvicorn
+numpy
+matplotlib
+requests
+earthengine-api
+rasterio
+pillow

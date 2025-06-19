@@ -41,21 +41,20 @@ export function getRasterBounds(
   let minLat = Infinity,
     maxLat = -Infinity;
 
-  // Check all points (including holes)
-  coordinates.forEach((ring) => {
+  coordinates.forEach((ring) =>
     ring.forEach(([lon, lat]) => {
       minLon = Math.min(minLon, lon);
       maxLon = Math.max(maxLon, lon);
       minLat = Math.min(minLat, lat);
       maxLat = Math.max(maxLat, lat);
-    });
-  });
+    }),
+  );
 
   return [
-    [minLon, minLat], // Southwest
-    [maxLon, minLat], // Southeast
-    [maxLon, maxLat], // Northeast
-    [minLon, maxLat], // Northwest
+    [minLon, maxLat], // NW (top-left)
+    [maxLon, maxLat], // NE (top-right)
+    [maxLon, minLat], // SE (bottom-right)
+    [minLon, minLat], // SW (bottom-left)
   ];
 }
 
